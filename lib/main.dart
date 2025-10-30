@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'bloc/language/language_bloc.dart';
 import 'bloc/login/login_bloc.dart';
 import 'bloc/movies_bloc/movies_bloc.dart';
+import 'bloc/theme/theme_bloc.dart';
+import 'bloc/theme/theme_state.dart';
 import 'config/routes/routes.dart';
 import 'config/routes/routes_name.dart';
 import 'repository/auth/login_repository.dart';
@@ -14,11 +16,9 @@ import 'repository/auth/login_repository.dart';
 GetIt getIt = GetIt.instance;
 
 Future<void> main() async {
-
-  serviceLocator();
-
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  serviceLocator();
 
   final prefs = await SharedPreferences.getInstance();
   final savedLang = prefs.getString('langCode') ?? 'en';
@@ -31,12 +31,11 @@ Future<void> main() async {
       startLocale: Locale(savedLang),
       child: MultiBlocProvider(
         providers: [
-          // TODO: if not work then add this
-          // BlocProvider(create: (_) => LanguageBloc()..add(LoadLanguageEvent())),
-          // TODO: either this
-          BlocProvider(create: (_) => LanguageBloc()),
+           BlocProvider(create: (_) => LanguageBloc()),
+          //BlocProvider(create: (_) => LanguageBloc()..add(LoadLanguageEvent())),
           BlocProvider(create: (_) => LoginBloc(loginRepository: LoginRepository())),
-         // BlocProvider(create: (_) => MoviesBloc(moviesRepository: MoviesRepository())),
+          BlocProvider(create: (_) => MoviesBloc(moviesRepository: MoviesRepository())),
+          BlocProvider(create: (_) => ThemeBloc()), // ✅ Added ThemeBloc
         ],
         child: const MyApp(),
       ),
@@ -49,17 +48,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Bloc Clean Code',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      localizationsDelegates: context.localizationDelegates,
-      initialRoute: RoutesName.splashScreen,
-      onGenerateRoute: Routes.generateRoute,
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, themeState) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Bloc Clean Code',
+          theme: themeState.themeData, // ✅ Dynamic theme
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          localizationsDelegates: context.localizationDelegates,
+          initialRoute: RoutesName.splashScreen,
+          onGenerateRoute: Routes.generateRoute,
+        );
+      },
     );
   }
 }

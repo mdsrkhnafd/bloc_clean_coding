@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/language/language_bloc.dart';
+import '../../bloc/theme/theme_bloc.dart';
+import '../../bloc/theme/theme_event.dart';
+import '../../bloc/theme/theme_state.dart';
 import '../../config/routes/routes_name.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,21 +28,39 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               context.read<LanguageBloc>().add(ToggleLanguageEvent(context));
             },
-            icon: Icon(Icons.language, color: Colors.black),
+            icon: Icon(
+              context.read<LanguageBloc>().state.locale.languageCode == 'en'
+                  ? Icons.language
+                  : Icons.translate,
+              color: Colors.black,
+            ),
           ),
-
-          IconButton(onPressed: () {
+          IconButton(
+            onPressed: () {
               Navigator.pushNamed(context, RoutesName.profileScreen);
-          }, icon: Icon(Icons.person)),
-          IconButton(onPressed: () {
+            },
+            icon: Icon(Icons.person),
+          ),
+          IconButton(
+            onPressed: () {
               Navigator.pushNamed(context, RoutesName.moviesScreen);
-          }, icon: Icon(Icons.movie)),
+            },
+            icon: Icon(Icons.movie),
+          ),
+          IconButton(
+            icon: Icon(
+              context.read<ThemeBloc>().state.isDarkMode
+                  ? Icons.dark_mode
+                  : Icons.light_mode,
+            ),
+            onPressed: () {
+              context.read<ThemeBloc>().add(ToggleThemeEvent());
+            },
+          ),
         ],
       ),
 
-      body: Center(
-        child: Text(tr("Login Screen")),
-      ),
+      body: Center(child: Text(tr("Login Screen"))),
     );
   }
 }
