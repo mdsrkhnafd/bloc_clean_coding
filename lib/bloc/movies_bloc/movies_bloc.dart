@@ -20,6 +20,10 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
     Emitter<MoviesState> emit,
   ) async {
     try {
+
+      // 🔹 Emit loading immediately
+      emit(state.copyWith(moviesList: ApiResponse.loading()));
+
       final response = await moviesRepository.fetchMoviesApiService();
 
       emit(state.copyWith(moviesList: ApiResponse.completed(response)));

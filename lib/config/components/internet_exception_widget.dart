@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class InternetExceptionWidget extends StatelessWidget {
   final VoidCallback onPress;
-  const InternetExceptionWidget({super.key, required this.onPress});
+  final bool isLoading;
+  const InternetExceptionWidget({super.key, required this.onPress, this.isLoading = false,});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +27,8 @@ class InternetExceptionWidget extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: onPress,
-            child: Text("RETRY", style: Theme.of(context).textTheme.bodySmall),
+            onPressed: isLoading ? null : onPress,
+            child: Text(isLoading ? "Loading..." : "Retry", style: Theme.of(context).textTheme.bodySmall),
           ),
         ),
       ],

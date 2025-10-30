@@ -24,37 +24,43 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text("Home Screen"),
         centerTitle: true,
         actions: [
+          // 🔹 Language Toggle Icon
           IconButton(
             onPressed: () {
               context.read<LanguageBloc>().add(ToggleLanguageEvent(context));
             },
-            icon: Icon(
-              context.read<LanguageBloc>().state.locale.languageCode == 'en'
-                  ? Icons.language
-                  : Icons.translate,
-              color: Colors.black,
-            ),
+            icon: Icon(Icons.language, color: Colors.black),
           ),
+
+          // 🔹 Profile
           IconButton(
             onPressed: () {
               Navigator.pushNamed(context, RoutesName.profileScreen);
             },
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
           ),
+
+          // 🔹 Movies
           IconButton(
             onPressed: () {
               Navigator.pushNamed(context, RoutesName.moviesScreen);
             },
-            icon: Icon(Icons.movie),
+            icon: const Icon(Icons.movie),
           ),
-          IconButton(
-            icon: Icon(
-              context.read<ThemeBloc>().state.isDarkMode
-                  ? Icons.dark_mode
-                  : Icons.light_mode,
-            ),
-            onPressed: () {
-              context.read<ThemeBloc>().add(ToggleThemeEvent());
+
+          // 🔹 Theme Toggle Icon
+          BlocBuilder<ThemeBloc, ThemeState>(
+            buildWhen: (previous, current) =>
+                previous.isDarkMode != current.isDarkMode,
+            builder: (context, themeState) {
+              return IconButton(
+                icon: Icon(
+                  themeState.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                ),
+                onPressed: () {
+                  context.read<ThemeBloc>().add(ToggleThemeEvent());
+                },
+              );
             },
           ),
         ],
