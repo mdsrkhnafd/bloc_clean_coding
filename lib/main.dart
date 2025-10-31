@@ -9,6 +9,7 @@ import 'bloc/login/login_bloc.dart';
 import 'bloc/movies_bloc/movies_bloc.dart';
 import 'bloc/theme/theme_bloc.dart';
 import 'bloc/theme/theme_state.dart';
+import 'config/app_bloc_observer/app_bloc_observer.dart';
 import 'config/routes/routes.dart';
 import 'config/routes/routes_name.dart';
 import 'repository/auth/login_repository.dart';
@@ -16,6 +17,7 @@ import 'repository/auth/login_repository.dart';
 GetIt getIt = GetIt.instance;
 
 Future<void> main() async {
+  Bloc.observer = AppBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   serviceLocator();
